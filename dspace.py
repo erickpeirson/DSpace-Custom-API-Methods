@@ -5,7 +5,7 @@ from pprint import pprint
 import string
 import unicodedata
 
-class dspace:
+class DSpace:
     """
     Talk to DSpace!
     """

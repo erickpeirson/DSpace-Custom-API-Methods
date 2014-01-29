@@ -4,6 +4,13 @@ dspace.py provides a class for interacting with the
 [DSpaceTools API](https://github.com/mbl-cli/DspaceTools/wiki/API), which is a custom
 REST API for the [ASU Digital HPS Repository](http://hpsrepository.asu.edu).
 
+## Usage
+
+```python
+from dspace import DSpace
+d = DSpace('my_public_key', 'my_private_key', 'http://path/to/rest/endpoint')
+```
+
 ## Questions?
 Ask [Erick](https://cbs.asu.edu/gradinfo/?page_id=49)
 
