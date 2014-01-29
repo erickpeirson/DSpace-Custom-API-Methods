@@ -4,6 +4,9 @@ dspace.py provides a Python class for interacting with the
 [DSpaceTools API](https://github.com/mbl-cli/DspaceTools/wiki/API), which is a custom
 REST API for the [ASU Digital HPS Repository](http://hpsrepository.asu.edu).
 
+You can find documentation 
+[here](http://erickpeirson.github.io/DSpace-Custom-API-Methods/)
+
 ## Usage
 
 Clone the most recent version of this project:
