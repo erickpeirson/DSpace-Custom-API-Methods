@@ -6,9 +6,17 @@ REST API for the [ASU Digital HPS Repository](http://hpsrepository.asu.edu).
 
 ## Usage
 
+Clone the most recent version of this project:
+
+```$ git clone https://github.com/erickpeirson/DSpace-Custom-API-Methods.git```
+
+Or download the project from [https://github.com/erickpeirson/DSpace-Custom-API-Methods].
+
+Make sure that dspace.py is in your import path, and use:
+
 ```python
-from dspace import DSpace
-d = DSpace('my_public_key', 'my_private_key', 'http://path/to/rest/endpoint')
+>>> from dspace import DSpace
+>>> d = DSpace('my_public_key', 'my_private_key', 'http://path/to/rest/endpoint')
 ```
 
 ## Questions?
