@@ -5,7 +5,6 @@ from pprint import pprint
 import string
 import unicodedata
 
-
 class dspace:
     """
     Talk to DSpace!
@@ -13,6 +12,11 @@ class dspace:
     
     def __init__(self, public_key, private_key, rest_path):
         """
+        Class for interacting with the ASU Digital HPS Community Repository
+        custom API. https://github.com/mbl-cli/DspaceTools/wiki/API
+        
+        Parameters
+        ----------
         public_key : string
         private_key : string
         rest_path : string
@@ -22,35 +26,101 @@ class dspace:
         self.private_key = private_key
         self.rest_path = rest_path
 
-    def get_digest(self, path, private_key):
-        """Produces a digest based on resource path and private key."""
+    def get_digest(self, path):
+        """
+        Produces an authentication digest based on resource path and your 
+        private key.
+        
+        Parameters
+        ----------
+        path : string
+            Relative URL of desired resource. E.g. '/items.xml'
+            
+        Returns
+        -------
+        string : authentication digest for desired resource.
+        """
         
         m = hashlib.sha1('/rest' + path + private_key)
         return m.hexdigest()[0:8]
         
-    def get_path(self, resource, idOnly=False):
-        """Produces a full path for the desired resource."""
-        return self.rest_path + resource + "?api_key=" + self.public_key + \
-                "&api_digest=" + self.get_digest(resource, self.private_key) + \
-                "&idOnly=" + str(idOnly).lower()
-
-    def get_element_from_resource(self, resource, idOnly=False):
-        """Returns an ElementTree root node."""
+    def get_path(self, path, idOnly=False):
+        """
+        Produces a full path for the desired resource.
         
-        request_path = self.get_path(resource, idOnly)
+        Parameters
+        ----------
+        path : string
+            Relative URL of desired resource. E.g. '/items.xml'
+        idOnly : boolean
+            If True, the returned path will yield only id/reference information
+            for the desired resource. Default is False.
+        
+        Returns
+        -------
+        string : full URL of desired resource, including authentication 
+            information.
+        """
+        
+        digest = self.get_digest(resource, self.private_key)
+        return self.rest_path + path + "?api_key=" + self.public_key + \
+                "&api_digest=" + digest + "&idOnly=" + str(idOnly).lower()
+
+    def get_element_from_resource(self, path, idOnly=False):
+        """
+        Retrieves the desired resource from the DSpace API, and returns an 
+        ElementTree root node.
+        
+        Parameters
+        ----------
+        path : string
+            Relative URL of desired resource. E.g. '/items.xml'
+        idOnly : boolean
+            If True, will yield only id/reference information for the desired 
+            resource. Default is False.
+        
+        Returns
+        -------
+        ElementTree node : containing API response.
+        """
+        
+        request_path = self.get_path(path, idOnly)
         response = urllib2.urlopen(request_path).read()
         return ET.fromstring(response)
 
     def clean_text(self, s):
-        """Gets rid of garbage."""
+        """
+        Gets rid of garbage.
+        
+        Parameters
+        ----------
+        s : string
+            A messy string.
+        
+        Returns
+        -------
+        string : A somewhat cleaner string.
+        """
         
         norm = unicodedata.normalize('NFKD', unicode(s))
         return  norm.encode('ascii', 'ignore').rstrip().replace('\n','')
 
     def dict_from_node(self, node, recursive=False):
         """
-        Takes an ET node, and returns children as dict. If recursive=False, any 
-        field with children will return as the number of children.
+        Converts ElementTree node to a dictionary. 
+        
+        Parameters
+        ----------
+        node : ElementTree node
+        recursive : boolean
+            If recursive=False, the value of any field with children will be the
+            number of children.
+        
+        Returns
+        -------
+        dict : nested dictionary. 
+            Tags as keys and values as values. Sub-elements that occur multiple 
+            times in an element are contained in a list.
         """
         
         dict = {}
@@ -80,8 +150,11 @@ class dspace:
 
     def communities(self):
         """
-        Retrieves all of the communities to which the user has access, and 
-        returns them as a list of dictionaries.
+        Retrieves all of the communities to which the user has access.
+        
+        Returns
+        -------
+        list : a list of nested dictionaries.
         """
         
         root = self.get_element_from_resource('/communities.xml')
@@ -91,80 +164,229 @@ class dspace:
             C.append(self.dict_from_node(node, True))
         return C
 
-    def community(self, id):
-        """Retrieves details for a specific community, by id."""
+    def community(self, community):
+        """
+        Retrieves details about a specific community, by id.
         
-        root = self.get_element_from_resource('/communities/'+str(id)+'.xml')
+        Parameters
+        ----------
+        community : string or int
+            Community id.
+        
+        Returns
+        -------
+        dict : a nested dictionary.
+        """
+        
+        path = '/communities/'+str(community)+'.xml'
+        root = self.get_element_from_resource(path)
         return self.dict_from_node(root, True)
 
-    def collection_ids(self, c_id):
-        """Returns a list of collection IDs for a given community."""
+    def list_collections(self, community):
+        """
+        Retrieves details about the collections in a community.
         
-        return [ c['id'] for c in \
-                  self.community(c_id)['collections']['collectionentityid'] ] 
+        Parameters
+        ----------
+        community : string or int
+            Community id.
+            
+        Returns
+        -------
+        list : a list of nested dictionaries.      
+        """
+        
+        return self.community(community)['collections']['collectionentityid']
 
-    def collection(self, id):
-        """Retrieves details for a specific collection, by id."""
+    def list_collection_ids(self, community):
+        """
+        Returns a list of collection IDs for a given community.
         
-        root = self.get_element_from_resource('/collections/'+str(id)+'.xml')
+        Parameters
+        ----------
+        community : string or int
+            Community id.
+            
+        Returns
+        -------
+        list : a list of collection ids.
+        """
+        
+        return [ c['id'] for c in self.collections(community) ]
+                   
+    def collection(self, collection):
+        """
+        Retrieves details for a specific collection, by id.
+        
+        Parameters
+        ----------
+        collection : string or int
+            Collection id.
+            
+        Returns
+        -------
+        dict: a nested dictionary.
+        
+        """
+        
+        path = '/collections/'+str(collection)+'.xml'
+        root = self.get_element_from_resource(path)
         return self.dict_from_node(root, True)
 
-    def items(self, collection_id):
-        return [ i for i in \
-                  self.collection(collection_id)['items']['itementity'] ]
+    def list_items(self, collection):
+        """
+        Retrieves details about all items in a collection.
+        
+        Parameters
+        ----------
+        collection : string or int
+            Collection id.
+            
+        Returns
+        -------
+        list : a list of nested dictionaries.
+        """
+
+        return self.collection(collectiond)['items']['itementity']
     
-    def item(self, id):
-        root = self.get_element_from_resource('/items/' + str(id) + '.xml')
+    def list_item_ids(self, collection):
+        """
+        Returns a list of item IDs for a given collection.
+        
+        Parameters
+        ----------
+        collection : string or int
+            Collection id.
+            
+        Returns
+        -------
+        list : a list of item ids.
+        """
+        
+        return [ i['id'] for i in self.items(collection) ]
+    
+    def item(self, item):
+        """
+        Retrieve an item by id.
+        
+        Parameters
+        ----------
+        item : string or int
+            An item id.
+        
+        Returns
+        -------
+        dict : a nested dictionary.
+        """
+    
+        path = '/items/' + str(item) + '.xml'
+        root = self.get_element_from_resource(path)
         return self.dict_from_node(root, True)
 
-    def item_metadata(self, id):
+    def item_metadata(self, item):
         """
         Returs metadata for an item as a simple dictionary, with dc fields
         as keys.
+        
+        Parameters
+        ----------
+        item : string or int
+            An item id.
+            
+        Returns
+        -------
+        dict : metadata, with dc fields as keys.
         """
         
-        i = self.item(id)
+        i = self.item(item)
         return { me['element'] + '.' + me['qualifier']:me['value'] for me \
                   in i['metadata']['metadataentity'] }
 
-    def collections(self):
-        """Retrieves all of the collections."""
+    def all_collections(self):
+        """
+        Retrieves details about all of the collections to which a user has
+        access.
+        
+        Returns
+        -------
+        list : a list of nested dictionaries.
+        """
         
         root = self.get_element_from_resource('/collections.xml')
-        collections = []
-        for node in root:
-            collections.append(self.dict_from_node(node))
-
-        return collections
+        return [ self.dict_from_node(node) for node in root ]
     
-    def bitstream_ids(self, id):
+    def list_bitstream_ids(self, item):
         """
         Returns a list of bitstream ids for an item.
+
+        Parameters
+        ----------
+        item : string or int
+            An item id.
+            
+        Returns
+        -------        
+        list : a list of bitstream ids.
         """
         
-        i = self.item(id)
+        i = self.item(item)
         if type(i['bitstreams']['bitstreamentity']) is dict:    # One bitstream.
             return [ i['bitstreams']['bitstreamentity']['id'] ]
         else:
             return [ be['id'] for be in i['bitstreams']['bitstreamentity'] ]
     
-    def bitstream(self, id):
+    def bitstream(self, bitstream):
         """
         Returns information about a bitstream.
+
+        Parameters
+        ----------
+        item : string or int
+            An item id.
+            
+        Returns
+        -------
+        dict : a nested dictionary.          
         """
         
-        root = self.get_element_from_resource('/bitstream/' + str(id) + '.xml')
+        path = '/bitstream/' + str(bitstream) + '.xml'
+        root = self.get_element_from_resource()
         bitstreamentities = root.findall('.//bitstreamentity')
         for b in bitstreamentities:
-            if self.dict_from_node(b)['id'] == str(id):
+            if self.dict_from_node(b)['id'] == str(bitstream):
                 return self.dict_from_node(b, True)
     
-    def get_bitstream(self, id, save_path=None):
+    def get_bitstream(self, bitstream, save_path=None):
         """
-        Downloads a bitstream and handles it.
-        """
+        Downloads a bitstream and handles it. If save_path is provided, returns
+        a file pointer. Otherwise returns the content of the bitstream.
         
+        Parameters
+        ----------
+        bitstream : string or int
+            A bitstream id.
+        save_path : string or None
+            Full path where bitstream should be saved, including the filename.
+        
+        Returns
+        -------
+        Contents of bitstream, or file pointer.
+        
+        Notes
+        -----
+        WARNING: This has only been tested on bitstreams containing text data!
+        
+        TODO
+        ----
+        More robust handling for different data types.
+        """
+
+        rpath = self.get_path('/bitstream/' + str(bitstream))
+        r = urllib2.urlopen(rpath)
+        data = r.read()
         if save_path is None:
-            rpath = self.get_path('/bitstream/' + str(id))
-            r = urllib2.urlopen(rpath)
-            return r.read()
+            return data
+        else:
+            with open(save_path, 'w') as f:
+                f.write(data)
+                return f
