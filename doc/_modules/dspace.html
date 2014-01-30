@@ -1,0 +1,485 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dspace &mdash; DSpace Custom API Methods  documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="DSpace Custom API Methods  documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">DSpace Custom API Methods  documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for dspace</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="kn">as</span> <span class="nn">ET</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">unicodedata</span>
+
+<div class="viewcode-block" id="DSpace"><a class="viewcode-back" href="../dspace.html#dspace.DSpace">[docs]</a><span class="k">class</span> <span class="nc">DSpace</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Talk to DSpace!</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">public_key</span><span class="p">,</span> <span class="n">private_key</span><span class="p">,</span> <span class="n">rest_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class for interacting with the ASU Digital HPS Community Repository</span>
+<span class="sd">        custom API. https://github.com/mbl-cli/DspaceTools/wiki/API</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        public_key : string</span>
+<span class="sd">        private_key : string</span>
+<span class="sd">        rest_path : string</span>
+<span class="sd">            URL for RESTful API endpoint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">public_key</span> <span class="o">=</span> <span class="n">public_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span> <span class="o">=</span> <span class="n">private_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rest_path</span> <span class="o">=</span> <span class="n">rest_path</span>
+
+<div class="viewcode-block" id="DSpace.get_digest"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.get_digest">[docs]</a>    <span class="k">def</span> <span class="nf">get_digest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produces an authentication digest based on resource path and your </span>
+<span class="sd">        private key.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : string</span>
+<span class="sd">            Relative URL of desired resource. E.g. &#39;/items.xml&#39;</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        string : authentication digest for desired resource.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">m</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="s">&#39;/rest&#39;</span> <span class="o">+</span> <span class="n">path</span> <span class="o">+</span> <span class="n">private_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+        </div>
+<div class="viewcode-block" id="DSpace.get_path"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.get_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">idOnly</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produces a full path for the desired resource.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : string</span>
+<span class="sd">            Relative URL of desired resource. E.g. &#39;/items.xml&#39;</span>
+<span class="sd">        idOnly : boolean</span>
+<span class="sd">            If True, the returned path will yield only id/reference information</span>
+<span class="sd">            for the desired resource. Default is False.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        string : full URL of desired resource, including authentication </span>
+<span class="sd">            information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">digest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_digest</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest_path</span> <span class="o">+</span> <span class="n">path</span> <span class="o">+</span> <span class="s">&quot;?api_key=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">public_key</span> <span class="o">+</span> \
+                <span class="s">&quot;&amp;api_digest=&quot;</span> <span class="o">+</span> <span class="n">digest</span> <span class="o">+</span> <span class="s">&quot;&amp;idOnly=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idOnly</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="DSpace.get_element_from_resource"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.get_element_from_resource">[docs]</a>    <span class="k">def</span> <span class="nf">get_element_from_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">idOnly</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the desired resource from the DSpace API, and returns an </span>
+<span class="sd">        ElementTree root node.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : string</span>
+<span class="sd">            Relative URL of desired resource. E.g. &#39;/items.xml&#39;</span>
+<span class="sd">        idOnly : boolean</span>
+<span class="sd">            If True, will yield only id/reference information for the desired </span>
+<span class="sd">            resource. Default is False.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ElementTree node : containing API response.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">request_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">idOnly</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request_path</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DSpace.clean_text"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.clean_text">[docs]</a>    <span class="k">def</span> <span class="nf">clean_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets rid of garbage.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        s : string</span>
+<span class="sd">            A messy string.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        string : A somewhat cleaner string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s">&#39;NFKD&#39;</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+        <span class="k">return</span>  <span class="n">norm</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">,</span> <span class="s">&#39;ignore&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DSpace.dict_from_node"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.dict_from_node">[docs]</a>    <span class="k">def</span> <span class="nf">dict_from_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts ElementTree node to a dictionary. </span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        node : ElementTree node</span>
+<span class="sd">        recursive : boolean</span>
+<span class="sd">            If recursive=False, the value of any field with children will be the</span>
+<span class="sd">            number of children.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict : nested dictionary. </span>
+<span class="sd">            Tags as keys and values as values. Sub-elements that occur multiple </span>
+<span class="sd">            times in an element are contained in a list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">snode</span> <span class="ow">in</span> <span class="n">node</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">snode</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">recursive</span><span class="p">:</span>
+                    <span class="c"># Will drill down until len(snode) &lt;= 0.</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_from_node</span><span class="p">(</span><span class="n">snode</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">snode</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_text</span><span class="p">(</span><span class="n">snode</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                
+            <span class="k">if</span> <span class="n">snode</span><span class="o">.</span><span class="n">tag</span> <span class="ow">in</span> <span class="nb">dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>    <span class="c"># If there are multiple subelements </span>
+                                            <span class="c">#  with the same tag, then the value </span>
+                                            <span class="c">#  of the element should be a list </span>
+                                            <span class="c">#  rather than a dict.</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="n">snode</span><span class="o">.</span><span class="n">tag</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>   <span class="c"># If a list has already been</span>
+                                                    <span class="c">#  started, just append to </span>
+                                                    <span class="c">#  it.</span>
+                    <span class="nb">dict</span><span class="p">[</span><span class="n">snode</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">dict</span><span class="p">[</span><span class="n">snode</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">dict</span><span class="p">[</span><span class="n">snode</span><span class="o">.</span><span class="n">tag</span><span class="p">],</span> <span class="n">value</span> <span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">dict</span><span class="p">[</span><span class="n">snode</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>     <span class="c"># Default behavior.</span>
+        <span class="k">return</span> <span class="nb">dict</span>
+</div>
+<div class="viewcode-block" id="DSpace.communities"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.communities">[docs]</a>    <span class="k">def</span> <span class="nf">communities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves all of the communities to which the user has access.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list : a list of nested dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_element_from_resource</span><span class="p">(</span><span class="s">&#39;/communities.xml&#39;</span><span class="p">)</span>
+        
+        <span class="n">C</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
+            <span class="n">C</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_from_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="bp">True</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">C</span>
+</div>
+<div class="viewcode-block" id="DSpace.community"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.community">[docs]</a>    <span class="k">def</span> <span class="nf">community</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">community</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves details about a specific community, by id.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        community : string or int</span>
+<span class="sd">            Community id.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict : a nested dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;/communities/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">community</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;.xml&#39;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_element_from_resource</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_from_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DSpace.list_collections"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.list_collections">[docs]</a>    <span class="k">def</span> <span class="nf">list_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">community</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves details about the collections in a community.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        community : string or int</span>
+<span class="sd">            Community id.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list : a list of nested dictionaries.      </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">community</span><span class="p">(</span><span class="n">community</span><span class="p">)[</span><span class="s">&#39;collections&#39;</span><span class="p">][</span><span class="s">&#39;collectionentityid&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="DSpace.list_collection_ids"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.list_collection_ids">[docs]</a>    <span class="k">def</span> <span class="nf">list_collection_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">community</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of collection IDs for a given community.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        community : string or int</span>
+<span class="sd">            Community id.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list : a list of collection ids.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="p">[</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collections</span><span class="p">(</span><span class="n">community</span><span class="p">)</span> <span class="p">]</span>
+                   </div>
+<div class="viewcode-block" id="DSpace.collection"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.collection">[docs]</a>    <span class="k">def</span> <span class="nf">collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves details for a specific collection, by id.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection : string or int</span>
+<span class="sd">            Collection id.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict: a nested dictionary.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;/collections/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;.xml&#39;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_element_from_resource</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_from_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DSpace.list_items"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.list_items">[docs]</a>    <span class="k">def</span> <span class="nf">list_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves details about all items in a collection.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection : string or int</span>
+<span class="sd">            Collection id.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list : a list of nested dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">(</span><span class="n">collectiond</span><span class="p">)[</span><span class="s">&#39;items&#39;</span><span class="p">][</span><span class="s">&#39;itementity&#39;</span><span class="p">]</span>
+    </div>
+<div class="viewcode-block" id="DSpace.list_item_ids"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.list_item_ids">[docs]</a>    <span class="k">def</span> <span class="nf">list_item_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of item IDs for a given collection.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection : string or int</span>
+<span class="sd">            Collection id.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list : a list of item ids.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="p">[</span> <span class="n">i</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span> <span class="p">]</span>
+    </div>
+<div class="viewcode-block" id="DSpace.item"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.item">[docs]</a>    <span class="k">def</span> <span class="nf">item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve an item by id.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item : string or int</span>
+<span class="sd">            An item id.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict : a nested dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;/items/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.xml&#39;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_element_from_resource</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_from_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DSpace.item_metadata"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.item_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">item_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returs metadata for an item as a simple dictionary, with dc fields</span>
+<span class="sd">        as keys.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item : string or int</span>
+<span class="sd">            An item id.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict : metadata, with dc fields as keys.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span> <span class="n">me</span><span class="p">[</span><span class="s">&#39;element&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="n">me</span><span class="p">[</span><span class="s">&#39;qualifier&#39;</span><span class="p">]:</span><span class="n">me</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">me</span> \
+                  <span class="ow">in</span> <span class="n">i</span><span class="p">[</span><span class="s">&#39;metadata&#39;</span><span class="p">][</span><span class="s">&#39;metadataentity&#39;</span><span class="p">]</span> <span class="p">}</span>
+</div>
+<div class="viewcode-block" id="DSpace.all_collections"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.all_collections">[docs]</a>    <span class="k">def</span> <span class="nf">all_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves details about all of the collections to which a user has</span>
+<span class="sd">        access.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list : a list of nested dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_element_from_resource</span><span class="p">(</span><span class="s">&#39;/collections.xml&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_from_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">root</span> <span class="p">]</span>
+    </div>
+<div class="viewcode-block" id="DSpace.list_bitstream_ids"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.list_bitstream_ids">[docs]</a>    <span class="k">def</span> <span class="nf">list_bitstream_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of bitstream ids for an item.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item : string or int</span>
+<span class="sd">            An item id.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------        </span>
+<span class="sd">        list : a list of bitstream ids.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s">&#39;bitstreams&#39;</span><span class="p">][</span><span class="s">&#39;bitstreamentity&#39;</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>    <span class="c"># One bitstream.</span>
+            <span class="k">return</span> <span class="p">[</span> <span class="n">i</span><span class="p">[</span><span class="s">&#39;bitstreams&#39;</span><span class="p">][</span><span class="s">&#39;bitstreamentity&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span> <span class="n">be</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">be</span> <span class="ow">in</span> <span class="n">i</span><span class="p">[</span><span class="s">&#39;bitstreams&#39;</span><span class="p">][</span><span class="s">&#39;bitstreamentity&#39;</span><span class="p">]</span> <span class="p">]</span>
+    </div>
+<div class="viewcode-block" id="DSpace.bitstream"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.bitstream">[docs]</a>    <span class="k">def</span> <span class="nf">bitstream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitstream</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns information about a bitstream.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item : string or int</span>
+<span class="sd">            An item id.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict : a nested dictionary.          </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;/bitstream/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bitstream</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.xml&#39;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_element_from_resource</span><span class="p">()</span>
+        <span class="n">bitstreamentities</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;.//bitstreamentity&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bitstreamentities</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_from_node</span><span class="p">(</span><span class="n">b</span><span class="p">)[</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">bitstream</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_from_node</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="DSpace.get_bitstream"><a class="viewcode-back" href="../dspace.html#dspace.DSpace.get_bitstream">[docs]</a>    <span class="k">def</span> <span class="nf">get_bitstream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitstream</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downloads a bitstream and handles it. If save_path is provided, returns</span>
+<span class="sd">        a file pointer. Otherwise returns the content of the bitstream.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bitstream : string or int</span>
+<span class="sd">            A bitstream id.</span>
+<span class="sd">        save_path : string or None</span>
+<span class="sd">            Full path where bitstream should be saved, including the filename.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Contents of bitstream, or file pointer.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        WARNING: This has only been tested on bitstreams containing text data!</span>
+<span class="sd">        </span>
+<span class="sd">        TODO</span>
+<span class="sd">        ----</span>
+<span class="sd">        More robust handling for different data types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">rpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s">&#39;/bitstream/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bitstream</span><span class="p">))</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">rpath</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">f</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">DSpace Custom API Methods  documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Erick Peirson.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

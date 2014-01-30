@@ -1,0 +1,574 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dspace Module &mdash; DSpace Custom API Methods  documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DSpace Custom API Methods  documentation" href="index.html" />
+    <link rel="prev" title="Welcome to the DSPace Custom API Methods documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to the DSPace Custom API Methods documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">DSpace Custom API Methods  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-dspace">
+<span id="dspace-module"></span><h1>dspace Module<a class="headerlink" href="#module-dspace" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="dspace.DSpace">
+<em class="property">class </em><tt class="descclassname">dspace.</tt><tt class="descname">DSpace</tt><big>(</big><em>public_key</em>, <em>private_key</em>, <em>rest_path</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#dspace.DSpace" title="dspace.DSpace"><tt class="xref py py-class docutils literal"><span class="pre">DSpace</span></tt></a> provides methods for interacting with the
+<a class="reference external" href="https://github.com/mbl-cli/DspaceTools/wiki/API">DSpaceTools API</a>, which
+is a custom REST API for the
+<a class="reference external" href="http://hpsrepository.asu.edu">ASU Digital HPS Repository</a>.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#dspace.DSpace.all_collections" title="dspace.DSpace.all_collections"><tt class="xref py py-obj docutils literal"><span class="pre">all_collections</span></tt></a>()</td>
+<td>Retrieves details about all of the collections to which a user has access.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#dspace.DSpace.bitstream" title="dspace.DSpace.bitstream"><tt class="xref py py-obj docutils literal"><span class="pre">bitstream</span></tt></a>(bitstream)</td>
+<td>Returns information about a bitstream.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#dspace.DSpace.clean_text" title="dspace.DSpace.clean_text"><tt class="xref py py-obj docutils literal"><span class="pre">clean_text</span></tt></a>(s)</td>
+<td>Gets rid of garbage.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#dspace.DSpace.collection" title="dspace.DSpace.collection"><tt class="xref py py-obj docutils literal"><span class="pre">collection</span></tt></a>(collection)</td>
+<td>Retrieves details for a specific collection, by id.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#dspace.DSpace.communities" title="dspace.DSpace.communities"><tt class="xref py py-obj docutils literal"><span class="pre">communities</span></tt></a>()</td>
+<td>Retrieves all of the communities to which the user has access.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#dspace.DSpace.community" title="dspace.DSpace.community"><tt class="xref py py-obj docutils literal"><span class="pre">community</span></tt></a>(community)</td>
+<td>Retrieves details about a specific community, by id.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#dspace.DSpace.dict_from_node" title="dspace.DSpace.dict_from_node"><tt class="xref py py-obj docutils literal"><span class="pre">dict_from_node</span></tt></a>(node[,&nbsp;recursive])</td>
+<td>Converts ElementTree node to a dictionary.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#dspace.DSpace.get_bitstream" title="dspace.DSpace.get_bitstream"><tt class="xref py py-obj docutils literal"><span class="pre">get_bitstream</span></tt></a>(bitstream[,&nbsp;save_path])</td>
+<td>Downloads a bitstream and handles it.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#dspace.DSpace.get_digest" title="dspace.DSpace.get_digest"><tt class="xref py py-obj docutils literal"><span class="pre">get_digest</span></tt></a>(path)</td>
+<td>Produces an authentication digest based on resource path and your private key.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#dspace.DSpace.get_element_from_resource" title="dspace.DSpace.get_element_from_resource"><tt class="xref py py-obj docutils literal"><span class="pre">get_element_from_resource</span></tt></a>(path[,&nbsp;idOnly])</td>
+<td>Retrieves the desired resource from the DSpace API.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#dspace.DSpace.get_path" title="dspace.DSpace.get_path"><tt class="xref py py-obj docutils literal"><span class="pre">get_path</span></tt></a>(path[,&nbsp;idOnly])</td>
+<td>Produces a full path for the desired resource.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#dspace.DSpace.item" title="dspace.DSpace.item"><tt class="xref py py-obj docutils literal"><span class="pre">item</span></tt></a>(item)</td>
+<td>Retrieve an item by id.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#dspace.DSpace.item_metadata" title="dspace.DSpace.item_metadata"><tt class="xref py py-obj docutils literal"><span class="pre">item_metadata</span></tt></a>(item)</td>
+<td>Returs metadata for an item as a simple dictionary, with dc fields as keys.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#dspace.DSpace.list_bitstream_ids" title="dspace.DSpace.list_bitstream_ids"><tt class="xref py py-obj docutils literal"><span class="pre">list_bitstream_ids</span></tt></a>(item)</td>
+<td>Returns a list of bitstream ids for an item.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#dspace.DSpace.list_collection_ids" title="dspace.DSpace.list_collection_ids"><tt class="xref py py-obj docutils literal"><span class="pre">list_collection_ids</span></tt></a>(community)</td>
+<td>Returns a list of collection IDs for a given community.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#dspace.DSpace.list_collections" title="dspace.DSpace.list_collections"><tt class="xref py py-obj docutils literal"><span class="pre">list_collections</span></tt></a>(community)</td>
+<td>Retrieves details about the collections in a community.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#dspace.DSpace.list_item_ids" title="dspace.DSpace.list_item_ids"><tt class="xref py py-obj docutils literal"><span class="pre">list_item_ids</span></tt></a>(collection)</td>
+<td>Returns a list of item IDs for a given collection.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#dspace.DSpace.list_items" title="dspace.DSpace.list_items"><tt class="xref py py-obj docutils literal"><span class="pre">list_items</span></tt></a>(collection)</td>
+<td>Retrieves details about all items in a collection.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dspace.DSpace.all_collections">
+<tt class="descname">all_collections</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.all_collections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.all_collections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves details about all of the collections to which a user has
+access.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><strong>list</strong> : a list of nested dictionaries.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.bitstream">
+<tt class="descname">bitstream</tt><big>(</big><em>bitstream</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.bitstream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.bitstream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns information about a bitstream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>item</strong> : string or int</p>
+<blockquote>
+<div><p>An item id.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>dict</strong> : a nested dictionary.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.clean_text">
+<tt class="descname">clean_text</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.clean_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.clean_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets rid of garbage. Strips non-ascii characters, newlines, and leading/
+trailing whitespace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>s</strong> : string</p>
+<blockquote>
+<div><p>A messy string.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>string</strong> : a somewhat cleaner string.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.collection">
+<tt class="descname">collection</tt><big>(</big><em>collection</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves details for a specific collection, by id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>collection</strong> : string or int</p>
+<blockquote>
+<div><p>Collection id.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>dict</strong> : a nested dictionary.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.communities">
+<tt class="descname">communities</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.communities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.communities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all of the communities to which the user has access.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><strong>list</strong> : a list of nested dictionaries.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.community">
+<tt class="descname">community</tt><big>(</big><em>community</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.community"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.community" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves details about a specific community, by id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>community</strong> : string or int</p>
+<blockquote>
+<div><p>Community id.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>dict</strong> : a nested dictionary.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.dict_from_node">
+<tt class="descname">dict_from_node</tt><big>(</big><em>node</em>, <em>recursive=False</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.dict_from_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.dict_from_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts ElementTree node to a dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>node</strong> : ElementTree node</p>
+<p><strong>recursive</strong> : boolean</p>
+<blockquote>
+<div><p>If recursive=False, the value of any field with children will be the
+number of children.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>dict</strong> : nested dictionary.</p>
+<blockquote class="last">
+<div><p>Tags as keys and values as values. Sub-elements that occur multiple
+times in an element are contained in a list.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.get_bitstream">
+<tt class="descname">get_bitstream</tt><big>(</big><em>bitstream</em>, <em>save_path=None</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.get_bitstream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.get_bitstream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads a bitstream and handles it. If save_path is provided, returns
+a file pointer. Otherwise returns the content of the bitstream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>bitstream</strong> : string or int</p>
+<blockquote>
+<div><p>A bitstream id.</p>
+</div></blockquote>
+<p><strong>save_path</strong> : string or None</p>
+<blockquote>
+<div><p>Full path where bitstream should be saved, including the filename.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>Contents of bitstream, or file pointer.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>WARNING: This has only been tested on bitstreams containing text data!</p>
+<p>TODO: More robust handling for different data types.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.get_digest">
+<tt class="descname">get_digest</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.get_digest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.get_digest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces an authentication digest based on resource path and your
+private key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>path</strong> : string</p>
+<blockquote>
+<div><p>Relative URL of desired resource. E.g. &#8216;/items.xml&#8217;</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>string</strong> : authentication digest for desired resource.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.get_element_from_resource">
+<tt class="descname">get_element_from_resource</tt><big>(</big><em>path</em>, <em>idOnly=False</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.get_element_from_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.get_element_from_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the desired resource from the DSpace API.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>path</strong> : string</p>
+<blockquote>
+<div><p>Relative URL of desired resource. E.g. &#8216;/items.xml&#8217;</p>
+</div></blockquote>
+<p><strong>idOnly</strong> : boolean</p>
+<blockquote>
+<div><p>If True, will yield only id/reference information for the desired
+resource. Default is False.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>ElementTree node</strong> : containing API response.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.get_path">
+<tt class="descname">get_path</tt><big>(</big><em>path</em>, <em>idOnly=False</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.get_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a full path for the desired resource.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>path</strong> : string</p>
+<blockquote>
+<div><p>Relative URL of desired resource. E.g. &#8216;/items.xml&#8217;</p>
+</div></blockquote>
+<p><strong>idOnly</strong> : boolean</p>
+<blockquote>
+<div><p>If True, the returned path will yield only id/reference information
+for the desired resource. Default is False.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>string</strong> : full URL of desired resource, including authentication</p>
+<blockquote class="last">
+<div><p>information.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.item">
+<tt class="descname">item</tt><big>(</big><em>item</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve an item by id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>item</strong> : string or int</p>
+<blockquote>
+<div><p>An item id.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>dict</strong> : a nested dictionary.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.item_metadata">
+<tt class="descname">item_metadata</tt><big>(</big><em>item</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.item_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.item_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returs metadata for an item as a simple dictionary, with dc fields
+as keys.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>item</strong> : string or int</p>
+<blockquote>
+<div><p>An item id.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>dict</strong> : metadata, with dc fields as keys.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.list_bitstream_ids">
+<tt class="descname">list_bitstream_ids</tt><big>(</big><em>item</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.list_bitstream_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.list_bitstream_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of bitstream ids for an item.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>item</strong> : string or int</p>
+<blockquote>
+<div><p>An item id.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>list</strong> : a list of bitstream ids.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.list_collection_ids">
+<tt class="descname">list_collection_ids</tt><big>(</big><em>community</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.list_collection_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.list_collection_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of collection IDs for a given community.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>community</strong> : string or int</p>
+<blockquote>
+<div><p>Community id.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>list</strong> : a list of collection ids.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.list_collections">
+<tt class="descname">list_collections</tt><big>(</big><em>community</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.list_collections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.list_collections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves details about the collections in a community.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>community</strong> : string or int</p>
+<blockquote>
+<div><p>Community id.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>list</strong> : a list of nested dictionaries.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.list_item_ids">
+<tt class="descname">list_item_ids</tt><big>(</big><em>collection</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.list_item_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.list_item_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of item IDs for a given collection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>collection</strong> : string or int</p>
+<blockquote>
+<div><p>Collection id.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>list</strong> : a list of item ids.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dspace.DSpace.list_items">
+<tt class="descname">list_items</tt><big>(</big><em>collection</em><big>)</big><a class="reference internal" href="_modules/dspace.html#DSpace.list_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dspace.DSpace.list_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves details about all items in a collection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>collection</strong> : string or int</p>
+<blockquote>
+<div><p>Collection id.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><strong>list</strong> : a list of nested dictionaries.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to the DSPace Custom API Methods documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/dspace.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to the DSPace Custom API Methods documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">DSpace Custom API Methods  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Erick Peirson.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
