@@ -46,7 +46,7 @@ class DSpace:
         string : authentication digest for desired resource.
         """
 
-        m = hashlib.sha1('/rest' + path + private_key)
+        m = hashlib.sha1('/rest' + path + self.private_key)
         return m.hexdigest()[0:8]
 
     def get_path(self, path, idOnly=False):
@@ -67,7 +67,7 @@ class DSpace:
             information.
         """
 
-        digest = self.get_digest(resource, self.private_key)
+        digest = self.get_digest(path)
         return self.rest_path + path + "?api_key=" + self.public_key + \
                 "&api_digest=" + digest + "&idOnly=" + str(idOnly).lower()
 
@@ -252,7 +252,7 @@ class DSpace:
         list : a list of nested dictionaries.
         """
 
-        return self.collection(collectiond)['items']['itementity']
+        return self.collection(collection)['items']['itementity']
 
     def list_item_ids(self, collection):
         """
@@ -268,7 +268,7 @@ class DSpace:
         list : a list of item ids.
         """
 
-        return [ i['id'] for i in self.items(collection) ]
+        return [ i['id'] for i in self.list_items(collection) ]
 
     def item(self, item):
         """
